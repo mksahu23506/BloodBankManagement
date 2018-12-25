@@ -105,6 +105,11 @@ class Hospital extends CI_Controller {
 
 	public function hospital_login()
 	{
+		if($this->loginData != NULL)
+		{
+			redirect(site_url());
+		}
+		
 		$RequestMethod = $this->input->server('REQUEST_METHOD');
 
 		if($RequestMethod == 'POST')

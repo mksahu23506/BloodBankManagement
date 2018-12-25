@@ -111,6 +111,11 @@ class Receiver extends CI_Controller {
 
 	public function receiver_login()
 	{
+		if($this->loginData != NULL)
+		{
+			redirect(site_url());
+		}
+
 		$returnUrl     = $this->input->get('returnUrl');
 		$RequestMethod = $this->input->server('REQUEST_METHOD');
 
