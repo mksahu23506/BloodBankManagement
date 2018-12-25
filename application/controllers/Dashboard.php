@@ -32,6 +32,10 @@ class Dashboard extends CI_Controller {
 	}
 	public function hospital_dashboard()
 	{
+		if($this->loginData['Role_Id'] == 3)
+		{
+			redirect('dashboard/receiver_dashboard');
+		}
 		// write code here for hospital
 		$RequestMethod = $this->input->server('REQUEST_METHOD');
 
@@ -63,13 +67,12 @@ class Dashboard extends CI_Controller {
 
 		if($this->loginData != NULL)
 		{
-			
 			$content['type']             = 'Dashboard';
 			$content['hospital_details'] = $this->db->get_where('tblhospital_users',array('Email' => $this->session->loginData['Email']))->result();
 			
-			$content['Blood_Group']  = $this->User_model->hospital_dashboard();
-			$content['notification'] = $this->User_model->hospital_notification();
-			$content['subview']      = 'hospital_dashboard';
+			$content['Blood_Group']      = $this->User_model->hospital_dashboard();
+			$content['notification']     = $this->User_model->hospital_notification();
+			$content['subview']          = 'hospital_dashboard';
 			$this->load->view('dashboard_layout',$content);
 		}
 
@@ -82,11 +85,18 @@ class Dashboard extends CI_Controller {
 
 	public function receiver_dashboard()
 	{
-
-		$content['notification'] = $this->User_model->receiver_notification();
-		$content['subview']      = 'dashboard';
-		$this->load->view('dashboard_layout',$content);
-		
+		if($this->session->loginData['Role_Id'] == 2)
+		{
+			// hospial
+			redirect('dashboard/hospital_dashboard');
+			die('error');
+		}
+		else
+		{
+			$content['notification'] = $this->User_model->receiver_notification();
+			$content['subview']      = 'dashboard';
+			$this->load->view('dashboard_layout',$content);
+		}
 	}
 
 	public function get_bloodBank_detail()
@@ -147,7 +157,6 @@ class Dashboard extends CI_Controller {
 			"total"    =>	$total,
 			"rows"     =>	$bloodBank_details,
 		);
-
 		echo json_encode($returnArray);
 	}
 
@@ -157,6 +166,17 @@ class Dashboard extends CI_Controller {
 		// print_r($this->loginData); exit; 
 		if($this->loginData != NULL)
 		{
+			if(empty($hospital_id) && empty($bloodGroup_Id))
+			{
+				$this->session->set_flashdata('er_msg', 'Please select hospital and blood group');
+				redirect('dashboard/receiver_dashboard');
+			}
+
+			if($this->loginData['Role_Id'] == 2)
+			{
+				redirect('dashboard/hospital_dashboard');
+			}
+
 			$this->db->trans_start();
 			// checking for requesting blood group and user blood group
 			if($this->loginData['Blood_Group'] == $bloodGroup_Id)

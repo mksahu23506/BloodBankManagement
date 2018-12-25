@@ -12,85 +12,95 @@ class Hospital extends CI_Controller {
 	}
 	public function index()
 	{
-
-		$RequestMethod       = $this->input->server('REQUEST_METHOD');
-		$hasValidationErrors = false;
-		// for hospital signup
-		if($RequestMethod == 'POST')
+		if($this->loginData['Role_Id'] == 2)
 		{
-			$this->db->trans_start();
-
-			$name     = $this->input->post('name');
-			$email    = $this->input->post('email');
-			$mobile   = $this->input->post('mobile');
-			$address  = $this->input->post('address');
-			$password = $this->input->post('pass');
-
-			// check duplicate records
-			$this->db->where('Email', $email);
-			$this->db->or_where('Mobile', $mobile);
-			$check_records = $this->db->get('tblhospital_users')->num_rows();
-			if($check_records > 0)
-			{
-				$this->session->set_flashdata('er_msg','Records already exist for this Email or Mobile no');
-				redirect(current_url());
-			}
-
-			$this->form_validation->set_rules('name','Hospital Name','required|min_length[5]');
-			$this->form_validation->set_rules('email','Email','required|valid_emails');
-			$this->form_validation->set_rules('mobile' ,'Mobile No','required|is_natural|exact_length[10]');
-			$this->form_validation->set_rules('address' ,'Address' ,'required');
-			$this->form_validation->set_rules('pass' ,'Password' ,'required|min_length[6]');
-			$this->form_validation->set_rules('repeat-pass' ,'Password Confirmation' ,'required|matches[pass]');
-
-			if($this->form_validation->run() == FALSE)
-			{
-				$this->form_validation->set_error_delimiters('<div class="alert alert-danger alert-dismissible" role="alert">
-					<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>',
-					'</div>');
-
-				$this->session->set_flashdata('er_msg', 'There have been validation error(s), please check the error messages');
-
-				$hasValidationErrors = true;
-				goto prepareview;
-			}
-
-			$insertArr = array(
-				'Role_Id'    => 2,
-				'Name'       => $name,
-				'Email'      => $email,
-				'Password'   => md5($password),
-				'Mobile'     => $mobile,
-				'Created_On' => date('Y-m-d H:i:s'),
-				'Is_Deleted' => 0,
-				'Address'    => $address,
-			);
-
-			$this->db->insert('tblhospital_users',$insertArr);
-			$this->db->trans_complete();
-
-			if($this->db->trans_status() === FALSE){
-				$this->session->set_flashdata('er_msg', 'Error adding details');
-			}
-			else{
-				$this->session->set_flashdata('tr_msg','Details saved, Registration Successfull');
-			}
-
-			redirect('hospital/');
+			redirect('dashboard/hospital_dashboard');
 		}
-
-		prepareview:
-		if($hasValidationErrors)
+		elseif($this->loginData['Role_Id'] == 3)
 		{
-			$content['hasValidationErrors'] = true;
+			redirect('dashboard/receiver_dashboard');
 		}
 		else
 		{
-			$content['hasValidationErrors'] = false;                
-		}
+			$RequestMethod       = $this->input->server('REQUEST_METHOD');
+			$hasValidationErrors = false;
+		// for hospital signup
+			if($RequestMethod == 'POST')
+			{
+				$this->db->trans_start();
 
-		$content['subview'] = 'hospital_signup';
-		$this->load->view('hospital_layout',$content);
+				$name     = $this->input->post('name');
+				$email    = $this->input->post('email');
+				$mobile   = $this->input->post('mobile');
+				$address  = $this->input->post('address');
+				$password = $this->input->post('pass');
+
+			// check duplicate records
+				$this->db->where('Email', $email);
+				$this->db->or_where('Mobile', $mobile);
+				$check_records = $this->db->get('tblhospital_users')->num_rows();
+				if($check_records > 0)
+				{
+					$this->session->set_flashdata('er_msg','Records already exist for this Email or Mobile no');
+					redirect(current_url());
+				}
+
+				$this->form_validation->set_rules('name','Hospital Name','required|min_length[5]');
+				$this->form_validation->set_rules('email','Email','required|valid_emails');
+				$this->form_validation->set_rules('mobile' ,'Mobile No','required|is_natural|exact_length[10]');
+				$this->form_validation->set_rules('address' ,'Address' ,'required');
+				$this->form_validation->set_rules('pass' ,'Password' ,'required|min_length[6]');
+				$this->form_validation->set_rules('repeat-pass' ,'Password Confirmation' ,'required|matches[pass]');
+
+				if($this->form_validation->run() == FALSE)
+				{
+					$this->form_validation->set_error_delimiters('<div class="alert alert-danger alert-dismissible" role="alert">
+						<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>',
+						'</div>');
+
+					$this->session->set_flashdata('er_msg', 'There have been validation error(s), please check the error messages');
+
+					$hasValidationErrors = true;
+					goto prepareview;
+				}
+
+				$insertArr = array(
+					'Role_Id'    => 2,
+					'Name'       => $name,
+					'Email'      => $email,
+					'Password'   => md5($password),
+					'Mobile'     => $mobile,
+					'Created_On' => date('Y-m-d H:i:s'),
+					'Is_Deleted' => 0,
+					'Address'    => $address,
+				);
+
+				$this->db->insert('tblhospital_users',$insertArr);
+				$this->db->trans_complete();
+
+				if($this->db->trans_status() === FALSE){
+					$this->session->set_flashdata('er_msg', 'Error adding details');
+				}
+				else{
+					$this->session->set_flashdata('tr_msg','Details saved, Registration Successfull');
+				}
+
+				redirect('hospital/');
+			}
+
+			prepareview:
+			if($hasValidationErrors)
+			{
+				$content['hasValidationErrors'] = true;
+			}
+			else
+			{
+				$content['hasValidationErrors'] = false;                
+			}
+
+			$content['subview'] = 'hospital_signup';
+			$this->load->view('hospital_layout',$content);
+		}
 	}
 
 	public function hospital_login()
@@ -159,6 +169,7 @@ class Hospital extends CI_Controller {
 
 		if($this->session->loginData['Role_Id'] == 3)
 		{
+			redirect('dashboard/receiver_dashboard');
 			$content['notification'] = $this->User_model->edit_hospital();
 		}
 		if($this->session->loginData['Role_Id'] == 2)

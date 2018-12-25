@@ -43,7 +43,9 @@ switch ($this->session->loginData['Role_Id']) {
 	<script src="<?php echo site_url('common/'); ?>vendor/jquery/jquery.min.js"></script>
 	<script src="<?php echo site_url('common/'); ?>vendor/jquery/jquery.bootgrid.fa.js"></script>
 	<script src="<?php echo site_url('common/'); ?>vendor/jquery/jquery.bootgrid.js"></script>
-
+  <!--  Notifications Plugin    -->
+  <script src="<?php echo site_url('common/dashboard/'); ?>/assets/js/core/bootstrap.min.js"></script>
+  <script src="<?php echo site_url('common/dashboard/'); ?>assets/js/plugins/bootstrap-notify.js"></script>
 
 </head>
 
@@ -104,7 +106,7 @@ switch ($this->session->loginData['Role_Id']) {
       				<ul class="navbar-nav">
       					<li class="nav-item">
       						<a class="nav-link" href="<?php echo site_url('dashboard/logout'); ?>">
-      							<i class="now-ui-icons users_single-02"></i>
+      							<i class="glyphicon glyphicon-log-out">Logout</i>
       							<p>
       								<span class="d-lg-none d-md-block">Account</span>
       							</p>
@@ -126,63 +128,63 @@ switch ($this->session->loginData['Role_Id']) {
       	<ul class="nav">
       		<li class="active">
       			<?php if($this->session->loginData['Role_Id'] == 2){ ?>
-      			<a href="<?php echo site_url('dashboard/hospital_dashboard'); ?>">
-      				<i class="now-ui-icons design_app"></i>
-      				<p>HOME</p>
-      			</a>
-      			<?php } else{ ?>
-      			<a href="<?php echo site_url('dashboard/receiver_dashboard'); ?>">
-      				<i class="now-ui-icons design_app"></i>
-      				<p>HOME</p>
-      			</a>
-      			<?php } ?>
-      		</li>
-      		<li>
-      			<a href="<?php echo site_url('notification/index/').$this->session->loginData['Role_Id'].'/'.$this->session->loginData['Resource_Id'];?>">
-      				<i class="now-ui-icons ui-1_bell-53"></i>
-      				<p><?php echo count($notification)>0?count($notification):'Notification'; ?></p>
-      			</a>
-      		</li>
-      		<li>
-      			<?php if($this->session->loginData['Role_Id'] == 2){$url = site_url('/hospital/edit_hospital/').$this->session->loginData['Resource_Id'];} else{$url = site_url('/receiver/edit_receiver/').$this->session->loginData['Resource_Id'];} ?>
-      			<a href="<?php echo $url; ?>">
-      				<i class="now-ui-icons users_single-02"></i>
-      				<p>Profile</p>
-      			</a>
-      		</li>
-      		<li>
-      		</ul>
-      	</div>
-      </div>
-      <!-- end of side bar -->
-      <section>
-      	<?php 
-      	$tr_msg = $this->session->flashdata('tr_msg');
-      	$er_msg = $this->session->flashdata('er_msg');
+             <a href="<?php echo site_url('dashboard/hospital_dashboard'); ?>">
+              <i class="now-ui-icons design_app"></i>
+              <p>HOME</p>
+            </a>
+          <?php } else{ ?>
+           <a href="<?php echo site_url('dashboard/receiver_dashboard'); ?>">
+            <i class="now-ui-icons design_app"></i>
+            <p>HOME</p>
+          </a>
+        <?php } ?>
+      </li>
+      <li>
+       <a href="<?php echo site_url('notification/index/').$this->session->loginData['Role_Id'].'/'.$this->session->loginData['Resource_Id'];?>">
+        <i class="now-ui-icons ui-1_bell-53"></i>
+        <p><?php echo count($notification)>0?count($notification):'Notification'; ?></p>
+      </a>
+    </li>
+    <li>
+     <?php if($this->session->loginData['Role_Id'] == 2){$url = site_url('/hospital/edit_hospital/').$this->session->loginData['Resource_Id'];} else{$url = site_url('/receiver/edit_receiver/').$this->session->loginData['Resource_Id'];} ?>
+     <a href="<?php echo $url; ?>">
+      <i class="now-ui-icons users_single-02"></i>
+      <p>Profile</p>
+    </a>
+  </li>
+  <li>
+  </ul>
+</div>
+</div>
+<!-- end of side bar -->
+<section>
+ <?php 
+ $tr_msg = $this->session->flashdata('tr_msg');
+ $er_msg = $this->session->flashdata('er_msg');
 
-      	if(!empty($tr_msg)){ ?>
-      	<div class="content animate-panel">
-      		<div class="row">
-      			<div class="col-md-12">
-      				<div class="hpanel">
-      					<div class="alert alert-success alert-dismissable alert1"> <i class="fa fa-check"></i>
-      						<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-      						<?php echo $this->session->flashdata('tr_msg');?>. </div>
-      					</div>
-      				</div>
-      			</div>
-      		</div>
-      		<?php } else if(!empty($er_msg)){?>
-      		<div class="content animate-panel">
-      			<div class="row">
-      				<div class="col-md-12">
-      					<div class="hpanel">
-      						<div class="alert alert-danger alert-dismissable alert1"> <i class="fa fa-check"></i>
-      							<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-      							<?php echo $this->session->flashdata('er_msg');?>. </div>
-      						</div>
-      					</div>
-      				</div>
-      			</div>
-      			<?php } ?>  
-      		</section>
+ if(!empty($tr_msg)){ ?>
+   <div class="content animate-panel">
+    <div class="row">
+     <div class="col-md-12">
+      <div class="hpanel">
+       <div class="alert alert-success alert-dismissable alert1"> <i class="fa fa-check"></i>
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        <?php echo $this->session->flashdata('tr_msg');?>. </div>
+      </div>
+    </div>
+  </div>
+</div>
+<?php } else if(!empty($er_msg)){?>
+  <div class="content animate-panel">
+   <div class="row">
+    <div class="col-md-12">
+     <div class="hpanel">
+      <div class="alert alert-danger alert-dismissable alert1"> <i class="fa fa-check"></i>
+       <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+       <?php echo $this->session->flashdata('er_msg');?>. </div>
+     </div>
+   </div>
+ </div>
+</div>
+<?php } ?>  
+</section>
